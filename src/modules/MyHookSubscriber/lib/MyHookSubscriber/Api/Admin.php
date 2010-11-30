@@ -140,7 +140,7 @@ class MyHookSubscriber_Api_Admin extends Zikula_Api
             $links[] = array('url'  => ModUtil::url('MyHookSubscriber', 'admin', 'view'), 'text' => $this->__('View items'));
         }
         if (SecurityUtil::checkPermission('MyHookSubscriber::', '::', ACCESS_ADD)) {
-            $links[] = array('url'  => ModUtil::url('MyHookSubscriber', 'admin', 'newitem'), 'text' => $this->__('Create an item'));
+            $links[] = array('url'  => ModUtil::url('MyHookSubscriber', 'admin', 'edit'), 'text' => $this->__('Create an item'));
         }
         if (SecurityUtil::checkPermission('MyHookSubscriber::', '::', ACCESS_ADMIN)) {
             $links[] = array('url'  => ModUtil::url('MyHookSubscriber', 'admin', 'modifyconfig'), 'text' => $this->__('Settings'));

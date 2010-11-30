@@ -64,7 +64,7 @@ class MyHookSubscriber_Installer extends Zikula_Installer
         }
 
         // unregister hook bundles
-        HookUtil::unRegisterHookSubscriberBundles($this->version);
+        HookUtil::unregisterHookSubscriberBundles($this->version);
         
         // delete any module variables
         $this->delVars();

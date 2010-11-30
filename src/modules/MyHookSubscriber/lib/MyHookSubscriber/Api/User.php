@@ -30,10 +30,13 @@ class MyHookSubscriber_Api_User extends Zikula_Api
                               ->select()
                               ->from('MyHookSubscriber_Model_Table')
                               ->where('id = ?', $args['id'])
-                              ->fetchOne()
-                              ->toArray();
+                              ->fetchOne();
         
-        return $item;
+        if ($item) {
+            return $item->toArray();
+        } else {
+            return array();
+        }
     }
 
     /**
