@@ -33,7 +33,7 @@
                 </div>
             </fieldset>
 
-            {notifydisplayhooks eventname='myhooksubscriber.hook.mhs.ui.edit' subject=$item id=$item.id}
+            {notifydisplayhooks eventname='myhooksubscriber.hook.mhs.ui.edit' area='module_area.myhooksubscriber.mhs' subject=$item id=$item.id}
 
             {if $item.id neq null}
             <fieldset>
