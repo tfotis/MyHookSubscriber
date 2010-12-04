@@ -36,5 +36,9 @@ class MyHookSubscriber_Version extends Zikula_Version
          $bundle->addType('process.edit', 'myhooksubscriber.hook.mhs.process.edit');
          $bundle->addType('process.delete', 'myhooksubscriber.hook.mhs.process.delete');
          $this->registerHookSubscriberBundle($bundle);
+
+         $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.myhooksubscriber.mhsfilter', __('MyHookSubscriber Filter Hooks'));
+         $bundle->addType('ui.filter', 'myhooksubscriber.hook.mhsfilter.ui.filter');
+         $this->registerHookSubscriberBundle($bundle);
     }
 }
