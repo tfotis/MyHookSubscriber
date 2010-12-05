@@ -153,6 +153,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
             $validators = $this->notifyHooks('myhooksubscriber.hook.mhs.validate.edit', $data, (($data['id'] > 0) ? $data['id'] :  null), array(), $validators)->getData();
             if ($validators->hasErrors()) {
                 LogUtil::registerError($this->__('Some errors were found.'));
+                // maybe get the errors that the hook registered and show them?
             } else {
                 // set a flag to assign our create/update operation status
                 $status = false;
