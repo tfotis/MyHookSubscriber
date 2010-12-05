@@ -11,7 +11,7 @@
  * information regarding copyright and licensing.
  */
 
-class MyHookSubscriber_Model_Table extends Doctrine_Record
+class MyHookSubscriber_Model_Record extends Doctrine_Record
 {
     /**
      * Set table definitions.
