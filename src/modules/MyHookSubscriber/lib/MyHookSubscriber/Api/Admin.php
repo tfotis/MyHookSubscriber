@@ -34,7 +34,7 @@ class MyHookSubscriber_Api_Admin extends Zikula_Api
 
         // create item
         try {
-            $item = new MyHookSubscriber_Model_Record();
+            $item = new MyHookSubscriber_Model_Items();
             $item->merge($args);
             $item->save();
          } catch (Exception $e) {
@@ -76,7 +76,7 @@ class MyHookSubscriber_Api_Admin extends Zikula_Api
 
         // update item
         try {
-            $item = Doctrine_Core::getTable('MyHookSubscriber_Model_Record')->find($args['id']);
+            $item = Doctrine_Core::getTable('MyHookSubscriber_Model_Items')->find($args['id']);
             $item->merge($args);
             $item->save();
          } catch (Exception $e) {
@@ -116,7 +116,7 @@ class MyHookSubscriber_Api_Admin extends Zikula_Api
 
         // delete item
         try {
-            $item = Doctrine_Core::getTable('MyHookSubscriber_Model_Record')->find($args['id']);
+            $item = Doctrine_Core::getTable('MyHookSubscriber_Model_Items')->find($args['id']);
             $item->delete();
          } catch (Exception $e) {
             LogUtil::registerError($this->__('Error! Delete attempt failed.'));

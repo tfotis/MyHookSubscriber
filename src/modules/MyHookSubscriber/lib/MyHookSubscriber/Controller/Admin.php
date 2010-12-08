@@ -112,7 +112,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
             // else we show the form to edit existing item
             if ($id == 0) {
                 // create an empty item from model
-                $item = new MyHookSubscriber_Model_Record();
+                $item = new MyHookSubscriber_Model_Items();
 
                 // Security check
                 if (!SecurityUtil::checkPermission('MyHookSubscriber::', '::', ACCESS_ADD)) {

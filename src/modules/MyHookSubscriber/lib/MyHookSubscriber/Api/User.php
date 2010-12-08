@@ -28,7 +28,7 @@ class MyHookSubscriber_Api_User extends Zikula_Api
 
         $item = Doctrine_Query::create()
                               ->select()
-                              ->from('MyHookSubscriber_Model_Record')
+                              ->from('MyHookSubscriber_Model_Items')
                               ->where('id = ?', $args['id'])
                               ->fetchOne();
         
@@ -68,7 +68,7 @@ class MyHookSubscriber_Api_User extends Zikula_Api
 
         // create the query
         $query = Doctrine_Query::create()
-                               ->from('MyHookSubscriber_Model_Record')
+                               ->from('MyHookSubscriber_Model_Items')
                                ->offset($args['offset']-1)
                                ->limit($args['limit']);
 
@@ -87,7 +87,7 @@ class MyHookSubscriber_Api_User extends Zikula_Api
     {   
         $count = Doctrine_Query::create()
                                ->select()
-                               ->from('MyHookSubscriber_Model_Record')
+                               ->from('MyHookSubscriber_Model_Items')
                                ->count();
 
         return $count;

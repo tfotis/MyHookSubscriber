@@ -58,7 +58,7 @@ class MyHookSubscriber_Installer extends Zikula_Installer
     {
         // drop table
         try {
-            DoctrineUtil::dropTable('myhooksubscriber');
+            DoctrineUtil::dropTable('myhooksubscribers');
         } catch (Exception $e) {
             return false;
         }
