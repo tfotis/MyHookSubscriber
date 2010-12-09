@@ -31,13 +31,8 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
      */
     public function main()
     {
-        // Security check
-        if (!SecurityUtil::checkPermission('MyHookSubscriber::', '::', ACCESS_EDIT)) {
-            return LogUtil::registerPermissionError();
-        }
-
-        // Return the output
-        return $this->view->fetch('myhooksubscriber_admin_main.tpl');
+        // We don't actually have a main function, just return view with an offset of 1
+        return $this->view(array('offset' => 1));
     }
 
     /**
@@ -59,12 +54,23 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
         // limit items
         $limit = $this->getVar('itemsperpage');
 
-        // Get all items
-        $items = ModUtil::apiFunc('MyHookSubscriber', 'user', 'getall', array('offset' => $offset, 'limit' => $limit));
+        // parameters to pass to dao
+        $params = array(
+            'offset' => $offset,
+            'limit' => $limit
+        );
 
+        // get our table
+        $itemsTable = Doctrine_Core::getTable('MyHookSubscriber_Model_Items');
+
+        // get all items, but limit them according to our config value $limit
+        $items = $itemsTable->getAll($params);
+
+        // iterate through the data and add options for view, edit and delete - according to permissions
         $data = array();
         foreach ($items as $item) {
             $options = array();
+
             $options[] = array('url' => ModUtil::url('MyHookSubscriber', 'user', 'display', array('id' => $item['id'])), 'image' => 'demo.gif', 'title' => $this->__('View'));
 
             if (SecurityUtil::checkPermission('MyHookSubscriber::', $item['title'].'::'.$item['id'], ACCESS_EDIT)) {
@@ -84,23 +90,23 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
         $this->view->assign('data', $data);
 
         // assign the information required to create the pager
-        $numitems = ModUtil::apiFunc('MyHookSubscriber', 'user', 'countitems');
-        $this->view->assign('pager', array('numitems' => $numitems, 'limit' => $limit));
+        $this->view->assign('pager', array('numitems' => $itemsTable->count(), 'limit' => $limit));
 
-        // return the output
+        // return the template
         return $this->view->fetch('myhooksubscriber_admin_view.tpl');
     }
 
     /**
      * create/edit an item
      *
-     * @param $id int the id of the item to be modified
+     * @param $id int     the id of the item to be modified.
+     * @param $data array the data of the item to be modified.
      * @return string HTML output
      */
     public function edit()
     {
-        // get item id from GET
-        $id = (int)FormUtil::getPassedValue('id', 0, 'GET');
+        // get our table, we will need it in all our operations
+        $itemsTable = Doctrine_Core::getTable('MyHookSubscriber_Model_Items');
 
         // get submitted data from POST
         $data = FormUtil::getPassedValue('data', null, 'POST');
@@ -108,11 +114,14 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
         // if $data is null, the form isn't submitted yet,
         // so we show the form to the user to fill in / update the data
         if (!$data) {
+            // get item id from GET
+            $id = (int)FormUtil::getPassedValue('id', 0, 'GET');
+
             // if id is 0, then we show the form to create new item
             // else we show the form to edit existing item
             if ($id == 0) {
                 // create an empty item from model
-                $item = new MyHookSubscriber_Model_Items();
+                $item = $itemsTable->create();
 
                 // Security check
                 if (!SecurityUtil::checkPermission('MyHookSubscriber::', '::', ACCESS_ADD)) {
@@ -120,9 +129,9 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
                 }
             } else {
                 // get data of existing item
-                $item = ModUtil::apiFunc('MyHookSubscriber', 'user', 'get', array('id' => $id));
+                $item = $itemsTable->find($id);
 
-                // if item is empty (does not exist or no permission?), return with error
+                // if item is empty, return with error
                 if (empty($item)) {
                     return LogUtil::registerError($this->__('No such item found.'), 404);
                 }
@@ -140,60 +149,40 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
             if (!SecurityUtil::confirmAuthKey()) {
                 return LogUtil::registerAuthidError(ModUtil::url('MyHookSubscriber', 'admin', 'view'));
             }
-
-            // type cast our id because inside the $data is a string
-            $data['id'] = (int)$data['id'];
             
             // validate item
             // do some checking to validate the data for this item
             // eg. $itemValid = $this->validateItem($data);
+            // for this example we don't have any validation, so just set it to true
+            $itemValid = true;
 
             // validate any hooks
             $validators = new Zikula_Collection_HookValidationProviders();
-            $validators = $this->notifyHooks('myhooksubscriber.hook.mhs.validate.edit', $data, (($data['id'] > 0) ? $data['id'] :  null), array(), $validators)->getData();
-            if ($validators->hasErrors()) {
+            $validators = $this->notifyHooks('myhooksubscriber.hook.mhs.validate.edit', $data, $data['id'], array(), $validators)->getData();
+            if ($validators->hasErrors() || !$itemValid) {
                 LogUtil::registerError($this->__('Some errors were found.'));
-                // maybe get the errors that the hook registered and show them?
             } else {
-                // set a flag to assign our create/update operation status
-                $status = false;
+                // save item
+                $id = $itemsTable->save($data);
+                
+                // item created/updated, so notify hooks of the event
+                $this->notifyHooks('myhooksubscriber.hook.mhs.process.edit', $data, $id);
 
-                // if $data['id'] is 0, we have an insert operation
-                // else we have an update operation
-                if ($data['id'] == 0) {
-                    // perform insert
-                    $insert_id = ModUtil::apiFunc('MyHookSubscriber', 'admin', 'create', $data);
-                    if ($insert_id > 0) {
-                        // update our $data array with the given id
-                        $data['id'] = $insert_id;
-                        // set status as true
-                        $status = true;
-                    }
-                } else {
-                    // perform update
-                    $status = ModUtil::apiFunc('MyHookSubscriber', 'admin', 'update', $data);
-                }
+                // An item was created, so we clear all cached templates (list of the items).
+                $this->view->clear_cache('myhooksubscriber_user_view.tpl');
 
-                if ($status == true) {
-                    // item created/updated, so notify hooks of the event
-                    $this->notifyHooks('myhooksubscriber.hook.mhs.process.edit', $data, $data['id']);
+                // set status message
+                LogUtil::registerStatus(empty($data['id']) ? $this->__('Item inserted.') : $this->__('Item updated.'));
 
-                    // An item was created, so we clear all cached templates (list of the items).
-                    $this->view->clear_cache('myhooksubscriber_user_view.tpl');
-
-                    // return to main
-                    System::redirect(ModUtil::url('MyHookSubscriber', 'admin', 'view'));
-                }
+                // return to main
+                System::redirect(ModUtil::url('MyHookSubscriber', 'admin', 'view'));
             }
 
             // if execution gets here, it means something went wrong
             // so show template but with the fields already filled in
             // if we have an edit operation, get existing item first to get the extra data (ob_status, cr_uid etc)
-            if ($data['id'] > 0) {
-                $item = ModUtil::apiFunc('MyHookSubscriber', 'user', 'get', array('id' => $data['id']));
-            }
-            
-            if (isset($item) && !empty($item)) {
+            if ($data['id']) {
+                $item = $itemsTable->find($data['id']);
                 $item = array_merge($item, $data);
             } else {
                 $item = $data;
@@ -214,16 +203,19 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
      * @param 'confirmation' confirmation that this item can be deleted
      * @return mixed string HTML output if no confirmation otherwise true
      */
-    public function delete($args)
+    public function delete()
     {
+        // get our table, we will need it in all our operations
+        $itemsTable = Doctrine_Core::getTable('MyHookSubscriber_Model_Items');
+        
         // get id
-        $id = FormUtil::getPassedValue('id', isset($args['id']) ? $args['id'] : null, 'REQUEST');
+        $id = (int)FormUtil::getPassedValue('id', 0, 'REQUEST');
 
-        // get cofirmation
+        // get confirmation
         $confirmation = FormUtil::getPassedValue('confirmation', null, 'POST');
 
-        // Get the existing item
-        $item = ModUtil::apiFunc('MyHookSubscriber', 'user', 'get', array('id' => $id));
+        // get the existing item
+        $item = $itemsTable->find($id);
 
         if (empty($item)) {
             return LogUtil::registerError($this->__('No such item found.'), 404);
@@ -240,7 +232,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
             // pass item to template
             $this->view->assign('item', $item);
 
-            // Return the output that has been generated by this function
+            // return the output that has been generated by this function
             return $this->view->fetch('myhooksubscriber_admin_delete.tpl');
         }
 
@@ -258,17 +250,18 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
             return LogUtil::registerError($this->__('Some errors were found.'));
         }
 
-        // Delete the item
-        $delete = ModUtil::apiFunc('MyHookSubscriber', 'admin', 'delete', array('id' => $id));
+        // delete the item
+        $item->delete();
 
-        if ($delete) {
-            // item deleted, so notify hooks of the event
-            $this->notifyHooks('myhooksubscriber.hook.mhs.process.delete', $item, $id);
+        // item deleted, so notify hooks of the event
+        $this->notifyHooks('myhooksubscriber.hook.mhs.process.delete', $item, $id);
 
-            // An item was deleted, so we clear all cached pages
-            $this->view->clear_cache(null, $id);
-            $this->view->clear_cache('myhooksubscriber_user_view.tpl');
-        }
+        // An item was deleted, so we clear all cached pages
+        $this->view->clear_cache(null, $id);
+        $this->view->clear_cache('myhooksubscriber_user_view.tpl');
+
+        // set status message
+        LogUtil::registerStatus($this->__('Item deleted.'));
 
         return System::redirect(ModUtil::url('MyHookSubscriber', 'admin', 'view'));
     }
@@ -278,45 +271,37 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
      *
      * @return mixed string HTML output string
      */
-    public function modifyconfig()
+    public function settings()
     {
         // Security check
         if (!SecurityUtil::checkPermission('MyHookSubscriber::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
-        // Return the output that has been generated by this function
-        return $this->view->fetch('myhooksubscriber_admin_modifyconfig.tpl');
-    }
+        // get submitted data from POST
+        $settings = FormUtil::getPassedValue('settings', null, 'POST');
 
-    /**
-     * update configuration
-     *
-     * @param 'itemsperpage' int the items to show per page
-     * @return mixed string HTML output if no confirmation otherwise true
-     */
-    public function updateconfig()
-    {
-        // Security check
-        if (!SecurityUtil::checkPermission('MyHookSubscriber::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+        // if $data is populated, the form is submitted so take action
+        if ($settings) {
+            // Confirm authorisation code
+            if (!SecurityUtil::confirmAuthKey()) {
+                return LogUtil::registerAuthidError(ModUtil::url('MyHookSubscriber', 'admin', 'view'));
+            }
+
+            // Update module variables
+            $itemsperpage = (int)$settings['itemsperpage'];
+            if ($itemsperpage < 1) {
+                $itemsperpage = 25;
+            }
+            $this->setVar('itemsperpage', $itemsperpage);
+
+            // the module configuration has been updated successfuly
+            LogUtil::registerStatus($this->__('Settings updated.'));
+
+            return System::redirect(ModUtil::url('MyHookSubscriber', 'admin', 'view'));
+        } else {
+            // return the template
+            return $this->view->fetch('myhooksubscriber_admin_settings.tpl');
         }
-
-        // Confirm authorisation code
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('MyHookSubscriber', 'admin', 'view'));
-        }
-
-        // Update module variables
-        $itemsperpage = (int)FormUtil::getPassedValue('itemsperpage', 25, 'POST');
-        if ($itemsperpage < 1) {
-            $itemsperpage = 25;
-        }
-        $this->setVar('itemsperpage', $itemsperpage);
-
-        // the module configuration has been updated successfuly
-        LogUtil::registerStatus($this->__('Done! Module configuration updated.'));
-
-        return System::redirect(ModUtil::url('MyHookSubscriber', 'admin', 'view'));
     }
 }
