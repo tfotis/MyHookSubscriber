@@ -33,6 +33,19 @@
                 </div>
             </fieldset>
 
+            {if $modvars.MyHookSubscriber.enablecategorization}
+            <fieldset>
+                <legend>{gt text='Categories'}</legend>
+                {foreach from=$catregistry key="property" item="category_id"}
+                <div class="z-formrow">
+                    <label for="myhooksubscriber_category_{$property}">{gt text='Category'}</label>
+                    {selector_category category=$category_id name="data[Categories][$property][category_id]" selectedValue=$item.Categories.$property.category_id defaultValue=0 __defaultText="Choose category" editLink=false}
+                    <input type="hidden" name="data[Categories][{$property}][reg_property]" value="{$property}" />
+                </div>
+                {/foreach}
+            </fieldset>
+            {/if}
+
             {notifydisplayhooks eventname='myhooksubscriber.hook.mhs.ui.edit' area='modulehook_area.myhooksubscriber.mhs' subject=$item id=$item.id}
 
             {if $item.id neq null}

@@ -17,6 +17,14 @@
                 </div>
             </fieldset>
 
+            <fieldset>
+                <legend>{gt text='Categories settings'}</legend>
+                <div class="z-formrow">
+                    <label for="myhooksubscriber_enablecategorization">{gt text='Enable categorization'}</label>
+                    <input id="myhooksubscriber_enablecategorization" type="checkbox" name="settings[enablecategorization]" {if $modvars.MyHookSubscriber.enablecategorization}checked="checked"{/if} />
+                </div>
+            </fieldset>
+
             <div class="z-formbuttons">
                 {button src='button_ok.gif' set='icons/small' __alt='Save' __title='Save'}
                 <a href="{modurl modname='MyHookSubscriber' type='admin' func='view'}">{img modname='core' src='button_cancel.gif' set='icons/small' __alt='Cancel' __title='Cancel'}</a>

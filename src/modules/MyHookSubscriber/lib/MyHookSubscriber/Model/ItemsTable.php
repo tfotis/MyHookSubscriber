@@ -15,7 +15,7 @@ class MyHookSubscriber_Model_ItemsTable extends Doctrine_Table
 {
     public function construct()
     {
-
+        //
     }
 
     public function getall($args)
@@ -34,10 +34,30 @@ class MyHookSubscriber_Model_ItemsTable extends Doctrine_Table
                                ->offset($args['offset']-1)
                                ->limit($args['limit']);
 
+        if (isset($args['cid'])) {
+            $query->where('MyHookSubscriber_Model_Items.Categories.category_id = ?', $args['cid']);
+        }
+
         //echo $query->getSqlQuery();
 
         // return array of data
         return $query->fetchArray();
+    }
+
+    public function countall($args)
+    {
+        $query = Doctrine_Query::create()
+                               ->select('COUNT(*) AS total_items')
+                               ->from('MyHookSubscriber_Model_Items');
+
+        if (isset($args['cid'])) {
+            $query->where('MyHookSubscriber_Model_Items.Categories.category_id = ?', $args['cid']);
+        }
+
+        //echo $query->getSqlQuery();
+
+        // return total items
+        return (int)$query->fetchOne()->total_items;
     }
 
     public function save($data)
@@ -50,15 +70,16 @@ class MyHookSubscriber_Model_ItemsTable extends Doctrine_Table
         } else {
             $item = $this->create();
         }
-        
+
         $item->merge($data);
 
         try {
             $item->save();
         } catch(Doctrine_Validator_Exception $e) {
             var_dump($item->getErrorStack());
+            System::shutdown();
         }
 
-       return $item->id;
+        return $item->id;
     }
 }

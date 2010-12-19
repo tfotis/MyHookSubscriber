@@ -30,7 +30,8 @@ class MyHookSubscriber_Installer extends Zikula_Installer
 
         // set up config variables
         $modvars = array(
-            'itemsperpage' => 25
+            'itemsperpage' => 25,
+            'enablecategorization' => true
         );
         $this->setVars($modvars);
 

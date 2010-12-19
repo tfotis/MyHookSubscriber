@@ -85,12 +85,13 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
 
             $data[] = $item;
         }
+        unset($items);
 
         // assign the data to the template
         $this->view->assign('data', $data);
 
         // assign the information required to create the pager
-        $this->view->assign('pager', array('numitems' => $itemsTable->count(), 'limit' => $limit));
+        $this->view->assign('pager', array('numitems' => $itemsTable->countall($params), 'limit' => $limit));
 
         // return the template
         return $this->view->fetch('myhooksubscriber_admin_view.tpl');
@@ -149,7 +150,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
             if (!SecurityUtil::confirmAuthKey()) {
                 return LogUtil::registerAuthidError(ModUtil::url('MyHookSubscriber', 'admin', 'view'));
             }
-            
+
             // validate item
             // do some checking to validate the data for this item
             // eg. $itemValid = $this->validateItem($data);
@@ -162,9 +163,10 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
             if ($validators->hasErrors() || !$itemValid) {
                 LogUtil::registerError($this->__('Some errors were found.'));
             } else {
+
                 // save item
                 $id = $itemsTable->save($data);
-                
+
                 // item created/updated, so notify hooks of the event
                 $this->notifyHooks('myhooksubscriber.hook.mhs.process.edit', $data, $id);
 
@@ -191,6 +193,12 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
 
         // assign the item to the template
         $this->view->assign('item', $item);
+
+        // categories
+        if ($this->getVar('enablecategorization')) {
+            $catregistry = CategoryRegistryUtil::getRegisteredModuleCategories('MyHookSubscriber', 'myhooksubscribers');
+            $this->view->assign('catregistry', $catregistry);
+        }
 
         // return the output
         return $this->view->fetch('myhooksubscriber_admin_edit.tpl');
@@ -289,11 +297,20 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
             }
 
             // Update module variables
+            // itemsperpage
             $itemsperpage = (int)$settings['itemsperpage'];
             if ($itemsperpage < 1) {
                 $itemsperpage = 25;
             }
             $this->setVar('itemsperpage', $itemsperpage);
+
+            // enablecategorization
+            if (isset($settings['enablecategorization'])) {
+                $enablecategorization = true;
+            } else {
+                $enablecategorization = false;
+            }
+            $this->setVar('enablecategorization', $enablecategorization);
 
             // the module configuration has been updated successfuly
             LogUtil::registerStatus($this->__('Settings updated.'));

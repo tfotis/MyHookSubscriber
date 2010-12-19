@@ -36,5 +36,9 @@ class MyHookSubscriber_Model_Items extends Doctrine_Record
     public function setUp()
     {   
         $this->actAs('Zikula_Doctrine_Template_StandardFields');
+
+        if (ModUtil::getVar('MyHookSubscriber', 'enablecategorization')) {
+            $this->actAs('Zikula_Doctrine_Template_Categorisable');
+        }
     }
 }
