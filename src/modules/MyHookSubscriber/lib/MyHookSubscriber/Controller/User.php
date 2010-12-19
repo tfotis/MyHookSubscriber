@@ -51,8 +51,17 @@ class MyHookSubscriber_Controller_User extends Zikula_Controller
          // limit
         $limit = $this->getVar('itemsperpage');
 
-        // Get all items
-        $items = ModUtil::apiFunc('MyHookSubscriber', 'user', 'getall', array('offset' => $offset, 'limit' => $limit));
+        // parameters to pass to dao
+        $params = array(
+            'offset' => $offset,
+            'limit' => $limit
+        );
+
+        // get our table
+        $itemsTable = Doctrine_Core::getTable('MyHookSubscriber_Model_Items');
+
+        // get all items, but limit them according to our config value $limit
+        $items = $itemsTable->getAll($params);
 
         // loop through each item
         $data = array();
@@ -75,10 +84,9 @@ class MyHookSubscriber_Controller_User extends Zikula_Controller
 
         // assign the item output to the template
         $this->view->assign('data', $data);
-        
-        // assign the values for the smarty plugin to produce a pager
-        $numitems = ModUtil::apiFunc('MyHookSubscriber', 'user', 'countitems');
-        $this->view->assign('pager', array('numitems' => $numitems, 'limit' => $limit));
+
+        // assign the information required to create the pager
+        $this->view->assign('pager', array('numitems' => $itemsTable->count(), 'limit' => $limit));
 
         // Return the output
         return $this->view->fetch('myhooksubscriber_user_view.tpl');
@@ -105,8 +113,11 @@ class MyHookSubscriber_Controller_User extends Zikula_Controller
             return $this->view->fetch($template);
         }
 
+        // get our table
+        $itemsTable = Doctrine_Core::getTable('MyHookSubscriber_Model_Items');
+
         // get the item
-        $item = ModUtil::apiFunc('MyHookSubscriber', 'user', 'get', array('id' => $id));
+        $item = $itemsTable->find($id);
         if (empty($item)) {
             return LogUtil::registerError($this->__('No such item found.'));
         }
