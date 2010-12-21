@@ -62,10 +62,12 @@ class MyHookSubscriber_Model_ItemsTable extends Doctrine_Table
 
     public function save($data)
     {
-        // type cast our id
-        $data['id'] = (int)$data['id'];
+        // if our id is empty, unset it
+        if (empty($data['id'])) {
+            unset($data['id']);
+        }
 
-        if ($data['id'] > 0) {
+        if (isset($data['id'])) {
             $item = $this->find($data['id']);
         } else {
             $item = $this->create();
