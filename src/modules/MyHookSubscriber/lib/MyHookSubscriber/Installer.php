@@ -11,7 +11,7 @@
  * information regarding copyright and licensing.
  */
 
-class MyHookSubscriber_Installer extends Zikula_Installer
+class MyHookSubscriber_Installer extends Zikula_AbstractInstaller
 {
     /**
      * install module
@@ -76,7 +76,7 @@ class MyHookSubscriber_Installer extends Zikula_Installer
 
         // unregister hook bundles
         HookUtil::unregisterHookSubscriberBundles($this->version);
-        
+
         // delete any module variables
         $this->delVars();
 
@@ -97,7 +97,7 @@ class MyHookSubscriber_Installer extends Zikula_Installer
         // we want to create a category with the name 'MyHookSubscriber' under /__SYSTEM__/Modules
         // so we first check out if category already exists
         $category = CategoryUtil::getCategoryByPath($root_category_path.'/'.$module_category);
-        
+
         // if it doesn't exist, create it
         if (!$category) {
             $category_id = CategoryUtil::createCategory($root_category_path, $module_category);
@@ -127,7 +127,7 @@ class MyHookSubscriber_Installer extends Zikula_Installer
 
     private function deletedefaultcategory()
     {
-        /* TODO delete default category */ 
+        /* TODO delete default category */
         return true;
     }
 }

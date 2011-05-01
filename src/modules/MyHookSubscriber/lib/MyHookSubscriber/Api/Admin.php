@@ -11,7 +11,7 @@
  * information regarding copyright and licensing.
  */
 
-class MyHookSubscriber_Api_Admin extends Zikula_Api
+class MyHookSubscriber_Api_Admin extends Zikula_AbstractApi
 {
     /**
      * get available admin panel links
@@ -29,7 +29,7 @@ class MyHookSubscriber_Api_Admin extends Zikula_Api
         if (SecurityUtil::checkPermission('MyHookSubscriber::', '::', ACCESS_ADD)) {
             $links[] = array('url'  => ModUtil::url('MyHookSubscriber', 'admin', 'edit'), 'text' => $this->__('Create an item'));
         }
-        
+
         if (SecurityUtil::checkPermission('MyHookSubscriber::', '::', ACCESS_ADMIN)) {
             $links[] = array('url'  => ModUtil::url('MyHookSubscriber', 'admin', 'settings'), 'text' => $this->__('Settings'));
         }

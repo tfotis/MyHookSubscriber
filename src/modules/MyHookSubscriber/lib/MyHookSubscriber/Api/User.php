@@ -11,7 +11,7 @@
  * information regarding copyright and licensing.
  */
 
-class MyHookSubscriber_Api_User extends Zikula_Api
+class MyHookSubscriber_Api_User extends Zikula_AbstractApi
 {
 
 }

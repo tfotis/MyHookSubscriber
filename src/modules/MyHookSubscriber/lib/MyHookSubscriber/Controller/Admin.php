@@ -11,7 +11,7 @@
  * information regarding copyright and licensing.
  */
 
-class MyHookSubscriber_Controller_Admin extends Zikula_Controller
+class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
 {
     /**
      * Post initialize.
@@ -215,7 +215,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_Controller
     {
         // get our table, we will need it in all our operations
         $itemsTable = Doctrine_Core::getTable('MyHookSubscriber_Model_Items');
-        
+
         // get id
         $id = (int)FormUtil::getPassedValue('id', 0, 'REQUEST');
 

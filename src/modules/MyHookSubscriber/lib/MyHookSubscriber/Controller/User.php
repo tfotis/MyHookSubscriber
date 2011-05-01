@@ -11,7 +11,7 @@
  * information regarding copyright and licensing.
  */
 
-class MyHookSubscriber_Controller_User extends Zikula_Controller
+class MyHookSubscriber_Controller_User extends Zikula_AbstractController
 {
     /**
      * the main function
@@ -72,7 +72,7 @@ class MyHookSubscriber_Controller_User extends Zikula_Controller
             return LogUtil::registerPermissionError();
         }
 
-        // offset 
+        // offset
         $offset = (int)FormUtil::getPassedValue('offset', isset($args['offset']) ? $args['offset'] : 1, 'GET');
         if (!is_numeric($offset) || $offset == 0 || $offset < 0) {
             $offset = 1;
@@ -147,7 +147,7 @@ class MyHookSubscriber_Controller_User extends Zikula_Controller
         if ($id == 0) {
             return LogUtil::registerArgsError();
         }
-        
+
         $template = 'myhooksubscriber_user_display.tpl';
 
         // check if the contents are cached.
@@ -163,7 +163,7 @@ class MyHookSubscriber_Controller_User extends Zikula_Controller
         if (empty($item)) {
             return LogUtil::registerError($this->__('No such item found.'));
         }
-        
+
         // Security check
         if (!SecurityUtil::checkPermission('MyHookSubscriber::', $item['title'].'::'.$id, ACCESS_READ)) {
             return LogUtil::registerPermissionError();
