@@ -10,9 +10,9 @@
 
     <div class="z-adminpageicon">
     {if $item.id eq null}
-        {img modname='core' src='edit.gif' set='icons/large' alt=$templatetitle}
+        {img modname='core' src='edit.png' set='icons/large' alt=$templatetitle}
     {else}
-        {img modname='core' src='xedit.gif' set='icons/large' alt=$templatetitle}
+        {img modname='core' src='xedit.png' set='icons/large' alt=$templatetitle}
     {/if}
     </div>
 
@@ -61,12 +61,12 @@
                 </ul>
             </fieldset>
             {/if}
-            
+
             <div class="z-formbuttons z-buttons">
-                {button src='button_ok.gif' set='icons/extrasmall' __alt='Save' __title='Save' __text="Save"}
+                {button src='button_ok.png' set='icons/extrasmall' __alt='Save' __title='Save' __text="Save"}
                 <a href="{modurl modname='MyHookSubscriber' type='admin' func='view'}" title="{gt text='Cancel'}">{img modname='core' src='button_cancel.gif' set='icons/extrasmall' __alt='Cancel' __title='Cancel'} {gt text='Cancel'}</a>
             </div>
-            
+
         </div>
 
     </form>

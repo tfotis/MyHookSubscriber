@@ -1,7 +1,7 @@
 {include file='myhooksubscriber_admin_menu.tpl'}
 
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='configure.gif' set='icons/large' alt=''}</div>
+    <div class="z-adminpageicon">{img modname='core' src='configure.png' set='icons/large' alt=''}</div>
 
     <h2>{gt text='Settings'}</h2>
 
@@ -26,7 +26,7 @@
             </fieldset>
 
             <div class="z-formbuttons">
-                {button src='button_ok.gif' set='icons/small' __alt='Save' __title='Save'}
+                {button src='button_ok.png' set='icons/small' __alt='Save' __title='Save'}
                 <a href="{modurl modname='MyHookSubscriber' type='admin' func='view'}">{img modname='core' src='button_cancel.gif' set='icons/small' __alt='Cancel' __title='Cancel'}</a>
             </div>
         </div>
