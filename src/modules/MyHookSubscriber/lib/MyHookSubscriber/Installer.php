@@ -31,7 +31,7 @@ class MyHookSubscriber_Installer extends Zikula_AbstractInstaller
         }
 
         // register hook bundles
-        HookUtil::registerHookSubscriberBundles($this->version);
+        HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
 
         // set up config variables
         $modvars = array(
@@ -51,7 +51,7 @@ class MyHookSubscriber_Installer extends Zikula_AbstractInstaller
         switch ($oldversion)
         {
             case '1.0.0':
-                //HookUtil::registerHookSubscriberBundles($this->version);
+                //HookUtil::registerSubscriberBundles($this->version->getHookSubscriberBundles());
         }
 
         return true;

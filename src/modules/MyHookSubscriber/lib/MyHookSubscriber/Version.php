@@ -27,7 +27,7 @@ class MyHookSubscriber_Version extends Zikula_AbstractVersion
 
     protected function setupHookBundles()
     {
-         $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.myhooksubscriber.mhs', __('MyHookSubscriber Display Hooks'));
+         $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'modulehook_area.myhooksubscriber.mhs', __('MyHookSubscriber Display Hooks'));
          $bundle->addType('ui.view', 'myhooksubscriber.hook.mhs.ui.view');
          $bundle->addType('ui.edit', 'myhooksubscriber.hook.mhs.ui.edit');
          $bundle->addType('ui.delete', 'myhooksubscriber.hook.mhs.ui.delete');
@@ -37,7 +37,7 @@ class MyHookSubscriber_Version extends Zikula_AbstractVersion
          $bundle->addType('process.delete', 'myhooksubscriber.hook.mhs.process.delete');
          $this->registerHookSubscriberBundle($bundle);
 
-         $bundle = new Zikula_Version_HookSubscriberBundle('modulehook_area.myhooksubscriber.mhsfilter', __('MyHookSubscriber Filter Hooks'));
+         $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'modulehook_area.myhooksubscriber.mhsfilter', __('MyHookSubscriber Filter Hooks'));
          $bundle->addType('ui.filter', 'myhooksubscriber.hook.mhsfilter.ui.filter');
          $this->registerHookSubscriberBundle($bundle);
     }
