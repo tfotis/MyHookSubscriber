@@ -27,7 +27,7 @@ class MyHookSubscriber_Version extends Zikula_AbstractVersion
 
     protected function setupHookBundles()
     {
-         $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.ui_hooks.myhooksubscriber.mhs', 'ui', __('MyHookSubscriber Display Hooks'));
+         $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.myhooksubscriber.ui_hooks.mhs', 'ui_hooks', __('MyHookSubscriber Display Hooks'));
          $bundle->addEvent('display_view', 'myhooksubscriber.ui_hooks.mhs.display_view');
          $bundle->addEvent('form_edit', 'myhooksubscriber.ui_hooks.mhs.form_edit');
          $bundle->addEvent('form_delete', 'myhooksubscriber.ui_hooks.mhs.form_delete');
@@ -37,7 +37,7 @@ class MyHookSubscriber_Version extends Zikula_AbstractVersion
          $bundle->addEvent('process_delete', 'myhooksubscriber.ui_hooks.mhs.process_delete');
          $this->registerHookSubscriberBundle($bundle);
 
-         $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.filter_hooks.myhooksubscriber.mhs', 'filter', __('MyHookSubscriber Filter Hooks'));
+         $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.myhooksubscriber.filter_hooks.mhs', 'filter_hooks', __('MyHookSubscriber Filter Hooks'));
          $bundle->addEvent('filter', 'myhooksubscriber.filter_hooks.mhsfilter.filter');
          $this->registerHookSubscriberBundle($bundle);
     }
