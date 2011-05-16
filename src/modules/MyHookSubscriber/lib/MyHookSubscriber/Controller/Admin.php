@@ -158,8 +158,8 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
             $itemValid = true;
 
             // validate any hooks
-            $validators = new Zikula_Collection_HookValidationProviders();
-            $validators = $this->notifyHooks('myhooksubscriber.ui_hooks.mhs.validate_edit', $data, $data['id'], array(), $validators)->getData();
+            $hook = new Zikula_ValidationHook('myhooksubscriber.hook.mhs.validate.edit', new Zikula_Hook_ValidationProviders());
+            $validators = $this->notifyHooks($hook)->getValidators();
             if ($validators->hasErrors() || !$itemValid) {
                 LogUtil::registerError($this->__('Some errors were found.'));
             } else {
@@ -168,7 +168,8 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
                 $id = $itemsTable->save($data);
 
                 // item created/updated, so notify hooks of the event
-                $this->notifyHooks('myhooksubscriber.ui_hooks.mhs.process_edit', $data, $id);
+                $hook = new Zikula_ProcessHook('myhooksubscriber.hook.mhs.process.edit', $id);
+                $this->notifyHooks($hook);
 
                 // An item was created, so we clear all cached templates (list of the items).
                 $this->view->clear_cache('myhooksubscriber_user_view.tpl');
