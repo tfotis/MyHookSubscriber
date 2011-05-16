@@ -3,4 +3,4 @@
 
 <h2>{$item.title|safehtml}</h2>
 
-{notifydisplayhooks eventname='myhooksubscriber.hook.mhs.ui.view' id=$item.id}
+{notifydisplayhooks eventname='myhooksubscriber.ui_hooks.mhs.display_view' id=$item.id}

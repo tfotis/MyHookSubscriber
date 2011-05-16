@@ -159,7 +159,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
 
             // validate any hooks
             $validators = new Zikula_Collection_HookValidationProviders();
-            $validators = $this->notifyHooks('myhooksubscriber.hook.mhs.validate.edit', $data, $data['id'], array(), $validators)->getData();
+            $validators = $this->notifyHooks('myhooksubscriber.ui_hooks.mhs.validate_edit', $data, $data['id'], array(), $validators)->getData();
             if ($validators->hasErrors() || !$itemValid) {
                 LogUtil::registerError($this->__('Some errors were found.'));
             } else {
@@ -168,7 +168,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
                 $id = $itemsTable->save($data);
 
                 // item created/updated, so notify hooks of the event
-                $this->notifyHooks('myhooksubscriber.hook.mhs.process.edit', $data, $id);
+                $this->notifyHooks('myhooksubscriber.ui_hooks.mhs.process_edit', $data, $id);
 
                 // An item was created, so we clear all cached templates (list of the items).
                 $this->view->clear_cache('myhooksubscriber_user_view.tpl');
@@ -253,7 +253,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
 
         // validate any hooks
         $validators = new Zikula_Collection_HookValidationProviders();
-        $validators = $this->notifyHooks('myhooksubscriber.hook.mhs.validate.delete', $item, $item['id'], array(), $validators)->getData();
+        $validators = $this->notifyHooks('myhooksubscriber.ui_hooks.mhs.validate_delete', $item, $item['id'], array(), $validators)->getData();
         if ($validators->hasErrors()) {
             return LogUtil::registerError($this->__('Some errors were found.'));
         }
@@ -262,7 +262,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
         $item->delete();
 
         // item deleted, so notify hooks of the event
-        $this->notifyHooks('myhooksubscriber.hook.mhs.process.delete', $item, $id);
+        $this->notifyHooks('myhooksubscriber.ui_hooks.mhs.process_delete', $item, $id);
 
         // An item was deleted, so we clear all cached pages
         $this->view->clear_cache(null, $id);

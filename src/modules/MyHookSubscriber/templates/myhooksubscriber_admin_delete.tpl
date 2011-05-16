@@ -15,7 +15,7 @@
             <input type="hidden" name="confirmation" value="1" />
             <input type="hidden" name="id" value="{$item.id|safetext}" />
 
-            {notifydisplayhooks eventname='myhooksubscriber.hook.mhs.ui.delete' id=$item.id}
+            {notifydisplayhooks eventname='myhooksubscriber.ui_hooks.mhs.form_delete' id=$item.id}
 
             <div class="z-formbuttons">
                 {button src='button_ok.png' set='icons/small' __alt='Confirm deletion?' __title='Confirm deletion?'}

@@ -46,7 +46,7 @@
             </fieldset>
             {/if}
 
-            {notifydisplayhooks eventname='myhooksubscriber.hook.mhs.ui.edit' id=$item.id}
+            {notifydisplayhooks eventname='myhooksubscriber.ui_hooks.mhs.form_edit' id=$item.id}
 
             {if $item.id neq null}
             <fieldset>

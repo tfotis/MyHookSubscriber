@@ -27,18 +27,18 @@ class MyHookSubscriber_Version extends Zikula_AbstractVersion
 
     protected function setupHookBundles()
     {
-         $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber_area.ui.myhooksubscriber.mhs', 'ui', __('MyHookSubscriber Display Hooks'));
-         $bundle->addType('ui.view', 'myhooksubscriber.hook.mhs.ui.view');
-         $bundle->addType('ui.edit', 'myhooksubscriber.hook.mhs.ui.edit');
-         $bundle->addType('ui.delete', 'myhooksubscriber.hook.mhs.ui.delete');
-         $bundle->addType('validate.edit', 'myhooksubscriber.hook.mhs.validate.edit');
-         $bundle->addType('validate.delete', 'myhooksubscriber.hook.mhs.validate.delete');
-         $bundle->addType('process.edit', 'myhooksubscriber.hook.mhs.process.edit');
-         $bundle->addType('process.delete', 'myhooksubscriber.hook.mhs.process.delete');
+         $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.ui_hooks.myhooksubscriber.mhs', 'ui', __('MyHookSubscriber Display Hooks'));
+         $bundle->addEvent('display_view', 'myhooksubscriber.ui_hooks.mhs.display_view');
+         $bundle->addEvent('form_edit', 'myhooksubscriber.ui_hooks.mhs.form_edit');
+         $bundle->addEvent('form_delete', 'myhooksubscriber.ui_hooks.mhs.form_delete');
+         $bundle->addEvent('validate_edit', 'myhooksubscriber.ui_hooks.mhs.validate_edit');
+         $bundle->addEvent('validate_delete', 'myhooksubscriber.ui_hooks.mhs.validate_delete');
+         $bundle->addEvent('process_edit', 'myhooksubscriber.ui_hooks.mhs.process_edit');
+         $bundle->addEvent('process_delete', 'myhooksubscriber.ui_hooks.mhs.process_delete');
          $this->registerHookSubscriberBundle($bundle);
 
-         $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber_area.filter.myhooksubscriber.mhsfilter', 'filter', __('MyHookSubscriber Filter Hooks'));
-         $bundle->addType('ui.filter', 'myhooksubscriber.hook.mhsfilter.ui.filter');
+         $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.filter_hooks.myhooksubscriber.mhs', 'filter', __('MyHookSubscriber Filter Hooks'));
+         $bundle->addEvent('filter', 'myhooksubscriber.filter_hooks.mhsfilter.filter');
          $this->registerHookSubscriberBundle($bundle);
     }
 }
