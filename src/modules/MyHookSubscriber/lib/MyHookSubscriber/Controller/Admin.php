@@ -158,7 +158,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
             $itemValid = true;
 
             // validate any hooks
-            $hook = new Zikula_ValidationHook('myhooksubscriber.hook.mhs.validate.edit', new Zikula_Hook_ValidationProviders());
+            $hook = new Zikula_ValidationHook('myhooksubscriber.ui_hooks.mhs.validate_edit', new Zikula_Hook_ValidationProviders());
             $validators = $this->notifyHooks($hook)->getValidators();
             if ($validators->hasErrors() || !$itemValid) {
                 LogUtil::registerError($this->__('Some errors were found.'));
@@ -168,7 +168,7 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
                 $id = $itemsTable->save($data);
 
                 // item created/updated, so notify hooks of the event
-                $hook = new Zikula_ProcessHook('myhooksubscriber.hook.mhs.process.edit', $id);
+                $hook = new Zikula_ProcessHook('myhooksubscriber.ui_hooks.mhs.process_edit', $id);
                 $this->notifyHooks($hook);
 
                 // An item was created, so we clear all cached templates (list of the items).
@@ -263,7 +263,8 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
         $item->delete();
 
         // item deleted, so notify hooks of the event
-        $this->notifyHooks('myhooksubscriber.ui_hooks.mhs.process_delete', $item, $id);
+        $hook = new Zikula_ProcessHook('myhooksubscriber.ui_hooks.mhs.process_delete', $id);
+        $this->notifyHooks($hook);
 
         // An item was deleted, so we clear all cached pages
         $this->view->clear_cache(null, $id);
