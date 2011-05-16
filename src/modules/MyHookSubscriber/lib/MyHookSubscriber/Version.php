@@ -38,7 +38,7 @@ class MyHookSubscriber_Version extends Zikula_AbstractVersion
          $this->registerHookSubscriberBundle($bundle);
 
          $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.myhooksubscriber.filter_hooks.mhs', 'filter_hooks', __('MyHookSubscriber Filter Hooks'));
-         $bundle->addEvent('filter', 'myhooksubscriber.filter_hooks.mhsfilter.filter');
+         $bundle->addEvent('filter', 'myhooksubscriber.filter_hooks.mhs.filter');
          $this->registerHookSubscriberBundle($bundle);
     }
 }
