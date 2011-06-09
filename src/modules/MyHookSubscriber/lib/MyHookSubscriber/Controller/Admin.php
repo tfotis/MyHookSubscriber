@@ -253,8 +253,8 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
         }
 
         // validate any hooks
-        $validators = new Zikula_Collection_HookValidationProviders();
-        $validators = $this->notifyHooks('myhooksubscriber.ui_hooks.mhs.validate_delete', $item, $item['id'], array(), $validators)->getData();
+        $hook = new Zikula_ValidationHook('myhooksubscriber.ui_hooks.mhs.validate_delete', new Zikula_Hook_ValidationProviders());
+        $validators = $this->notifyHooks($hook)->getValidators();
         if ($validators->hasErrors()) {
             return LogUtil::registerError($this->__('Some errors were found.'));
         }
