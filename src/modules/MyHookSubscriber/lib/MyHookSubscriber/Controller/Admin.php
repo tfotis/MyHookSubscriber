@@ -168,7 +168,8 @@ class MyHookSubscriber_Controller_Admin extends Zikula_AbstractController
                 $id = $itemsTable->save($data);
 
                 // item created/updated, so notify hooks of the event
-                $hook = new Zikula_ProcessHook('myhooksubscriber.ui_hooks.mhs.process_edit', $id);
+                $url = new Zikula_ModUrl('MyHookSubscriber', 'user', 'display', ZLanguage::getLanguageCode(), array('id' => $$id));
+                $hook = new Zikula_ProcessHook('myhooksubscriber.ui_hooks.mhs.process_edit', $id, $url);
                 $this->notifyHooks($hook);
 
                 // An item was created, so we clear all cached templates (list of the items).
